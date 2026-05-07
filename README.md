@@ -1,4 +1,4 @@
-**AI-Powered Payment Reminder Automation System**
+****AI-Powered Payment Reminder Automation System****
 
 A smart payment reminder automation workflow built using n8n, OpenAI, Google Sheets, Gmail, and Telegram.
 This system automates payment follow-ups by generating professional AI-based reminder messages, sending automated emails, detecting overdue payments, and escalating alerts through Telegram notifications.
@@ -49,7 +49,7 @@ Send Telegram escalation alerts
 
 Update reminder status in Google Sheets
 
-⚙️** Workflow Components**
+⚙️ **Workflow Components**
 
 Google Sheets Trigger
 
@@ -89,7 +89,7 @@ Thank you for your cooperation.
 
 — ABS.co
 
-📂 ** Use Cases**
+📂 **Use Cases**
 
 Small business payment tracking
 
