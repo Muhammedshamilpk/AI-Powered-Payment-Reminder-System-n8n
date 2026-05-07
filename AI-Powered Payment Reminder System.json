@@ -1,0 +1,426 @@
+{
+  "name": "AI-Powered Payment Reminder System",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "159xeFhz3Zr_ND_n98H6IJfwtfSmEMDZGC5Nqt6qTsmg",
+          "mode": "list",
+          "cachedResultName": "Reminder-system",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/159xeFhz3Zr_ND_n98H6IJfwtfSmEMDZGC5Nqt6qTsmg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/159xeFhz3Zr_ND_n98H6IJfwtfSmEMDZGC5Nqt6qTsmg/edit#gid=0"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -32
+      ],
+      "id": "a5947b6c-f9d7-4cb8-b799-9f9279f787d7",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "x1Rk1bktXfJEAZHU",
+          "name": "Google Sheets Trigger OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f1c78acf-8ef9-4f24-b4dc-47456e840a01",
+              "leftValue": "={{$json[\"Status\"]}}",
+              "rightValue": "Unpaid",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -192,
+        -32
+      ],
+      "id": "18f00ad9-103c-4216-9a25-f3e4f40f46c4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a professional payment reminder assistant.\n\nGenerate short, polite, professional payment reminder messages.\n\nInclude:\n\n* customer name\nCustomer Name: {{$node[\"Google Sheets Trigger\"].json[\"Name\"]}}\n\nPending Amount: ₹ {{$node[\"Google Sheets Trigger\"].json[\"Amount\"]}}\n* pending amount\n\nKeep the message friendly and professional.\n\nReturn only the reminder text.\n\nand give ending company name as ABS.co\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        16,
+        -128
+      ],
+      "id": "ee3fe06a-a6f3-4f5a-9007-37354b0e97eb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        112
+      ],
+      "id": "cf939aa3-ec45-44cc-9602-108e3933b216",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $node[\"Google Sheets Trigger\"].json[\"Email\"] }}",
+        "subject": "Payment is Pending",
+        "emailType": "text",
+        "message": "={{ $json[\"output\"] }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        368,
+        80
+      ],
+      "id": "5a5769b1-19b8-4e8b-9e80-67534dfea182",
+      "name": "Send a message",
+      "webhookId": "1277c62d-52fb-4de1-b8a0-2bfd43e0b38a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y4iV7xvwtlaD4J25",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "159xeFhz3Zr_ND_n98H6IJfwtfSmEMDZGC5Nqt6qTsmg",
+          "mode": "list",
+          "cachedResultName": "Reminder-system",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/159xeFhz3Zr_ND_n98H6IJfwtfSmEMDZGC5Nqt6qTsmg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/159xeFhz3Zr_ND_n98H6IJfwtfSmEMDZGC5Nqt6qTsmg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Reminder sent",
+            "DueDate": "={{ $node[\"Google Sheets Trigger\"].json[\"DueDate\"] }}",
+            "Amount": "={{ $node[\"Google Sheets Trigger\"].json[\"Amount\"] }}",
+            "Number": "={{ $node[\"Google Sheets Trigger\"].json[\"Number\"] }}",
+            "Email": "={{ $node[\"Google Sheets Trigger\"].json[\"Email\"] }}",
+            "Name": "={{ $node[\"Google Sheets Trigger\"].json[\"Name\"] }}",
+            "ID": "={{ $node[\"Google Sheets Trigger\"].json[\"ID\"] }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Number",
+              "displayName": "Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Amount",
+              "displayName": "Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "DueDate",
+              "displayName": "DueDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        80
+      ],
+      "id": "467ad589-72e7-4bdd-b577-65e238c8a868",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pfb14pbBwAC4uZzd",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "782290583",
+        "text": "=Over Due \nCustomer:{{ $node[\"Google Sheets Trigger\"].json[\"Name\"] }}\nPending Amount:{{ $node[\"Google Sheets Trigger\"].json[\"Amount\"] }}\nDue Date:{{ $node[\"Google Sheets Trigger\"].json[\"DueDate\"] }}\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        -144
+      ],
+      "id": "f4270afc-106f-4cb5-aba8-b439c1fbcedd",
+      "name": "Send a text message",
+      "webhookId": "c4cfcba0-1808-4ee4-a412-dd075af136d6",
+      "credentials": {
+        "telegramApi": {
+          "id": "X7XNrbAda3L5QQV4",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2c554474-2451-461b-90e5-d49c9dff8ede",
+              "leftValue": "={{$node[\"Google Sheets Trigger\"].json[\"DueDate\"] }}",
+              "rightValue": "={{ $now.minus({days:7}) }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        368,
+        -128
+      ],
+      "id": "53b92b96-8e84-4970-9383-440f996731ec",
+      "name": "If1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "080af456-39f2-490e-a53d-06c8daf4c460",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "63614822e58cb755ac16878d2059d39cf4a705136775f12a2f66f1713f8d6d1f"
+  },
+  "id": "7vKfva2Tt9jQm7O5",
+  "tags": []
+}
